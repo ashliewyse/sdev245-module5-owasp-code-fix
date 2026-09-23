@@ -1,6 +1,6 @@
 # Module 5: OWASP Top 10 Code Fix
 
-**Status: Sample 1 implemented with nine passing unit tests. Samples 2–10 remain to be completed.**
+**Status: Samples 1–2 implemented and tested (9 JavaScript unit tests and 11 Python route tests). Samples 3–10 remain to be completed.**
 
 ## Assignment
 
@@ -20,7 +20,7 @@ Due: September 25, 2026 at 11:59 p.m. (as displayed in Canvas).
 
 ## Organization
 
-Each numbered folder in `samples/` matches a supplied assignment sample. Sample 1 contains a corrected JavaScript handler, documentation, and executable unit tests. Samples 2–10 contain planning templates.
+Each numbered folder in `samples/` matches a supplied assignment sample. Samples 1–2 contain corrected JavaScript/Python routes, documentation, and executable tests. Samples 3–10 contain planning templates.
 
 ## Grading
 
@@ -52,15 +52,15 @@ Folder: [samples/01-broken-access-control-javascript](samples/01-broken-access-c
 
 Folder: [samples/02-broken-access-control-python](samples/02-broken-access-control-python/)
 
-**Security flaw and real-world impact:** TODO.
+**Security flaw and real-world impact:** The original route trusts the account ID in the URL without checking ownership. A caller can request someone else's account, potentially exposing private fields included by `to_dict()`. ORM parameterization alone does not authorize the request.
 
-**Corrected code:** TODO — add the source file and link it here.
+**Corrected code:** [secure_account.py](samples/02-broken-access-control-python/secure_account.py).
 
-**Why the fix works:** TODO.
+**Why the fix works:** The route uses Flask-Login's authenticated user, validates the integer ID contract, and rejects another owner's ID before an account query. It selects and returns only approved fields, disables response caching, and handles missing records and database errors safely. See the [sample README](samples/02-broken-access-control-python/README.md) for the required authentication and model setup.
 
-**Verification:** TODO — describe relevant checks and actual results.
+**Verification:** Eleven route tests passed with Flask, Flask-Login, SQLAlchemy, and an in-memory SQLite database on Python 3.14.6. They verify owner access, cross-user denial, identity/input validation, response filtering, and failure behavior. Test sessions bypass password verification; a production login system is outside this sample.
 
-**Official OWASP reference:** TODO — add the specific page URL and explain its relevance.
+**Official OWASP references:** [A01:2021 Broken Access Control](https://owasp.org/Top10/2021/A01_2021-Broken_Access_Control/), [IDOR Prevention](https://cheatsheetseries.owasp.org/cheatsheets/Insecure_Direct_Object_Reference_Prevention_Cheat_Sheet.html), and [Authorization](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html). These support object-level ownership checks and least privilege.
 
 ### 3. Java MD5 password hashing
 

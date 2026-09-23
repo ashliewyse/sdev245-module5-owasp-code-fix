@@ -1,6 +1,6 @@
 # Module 5: OWASP Top 10 Code Fix
 
-**Status: Starter scaffold — code fixes and explanations still need to be completed.**
+**Status: Sample 1 implemented with nine passing unit tests. Samples 2–10 remain to be completed.**
 
 ## Assignment
 
@@ -20,7 +20,7 @@ Due: September 25, 2026 at 11:59 p.m. (as displayed in Canvas).
 
 ## Organization
 
-Each numbered folder in `samples/` contains a planning README. Add the corrected source files alongside it using the appropriate extension. These are starter templates, not runnable implementations.
+Each numbered folder in `samples/` matches a supplied assignment sample. Sample 1 contains a corrected JavaScript handler, documentation, and executable unit tests. Samples 2–10 contain planning templates.
 
 ## Grading
 
@@ -38,15 +38,15 @@ Each numbered folder in `samples/` contains a planning README. Add the corrected
 
 Folder: [samples/01-broken-access-control-javascript](samples/01-broken-access-control-javascript/)
 
-**Security flaw and real-world impact:** TODO.
+**Security flaw and real-world impact:** The original route retrieves whichever user ID appears in the URL without checking ownership. A caller can change that ID to read someone else's profile. Depending on the schema, returning the entire user record may disclose private fields. The snippet also returns internal database errors.
 
-**Corrected code:** TODO — add the source file and link it here.
+**Corrected code:** [secure-profile.cjs](samples/01-broken-access-control-javascript/secure-profile.cjs).
 
-**Why the fix works:** TODO.
+**Why the fix works:** The handler requires a verified authenticated ID, validates the requested ID, and allows only matching owner IDs before accessing the database. It returns an explicit field allowlist and generic errors. Real authentication middleware must establish the identity; see the [sample README](samples/01-broken-access-control-javascript/README.md) for the required integration contract.
 
-**Verification:** TODO — describe relevant checks and actual results.
+**Verification:** Nine unit tests passed on Node.js v24.18.0. They cover anonymous access, malformed identity and URL input, owner success, cross-user denial, spoofed inputs, ID normalization, missing records, and safe database errors. Login and database integration are not tested.
 
-**Official OWASP reference:** TODO — add the specific page URL and explain its relevance.
+**Official OWASP references:** [A01:2021 Broken Access Control](https://owasp.org/Top10/2021/A01_2021-Broken_Access_Control/), [IDOR Prevention](https://cheatsheetseries.owasp.org/cheatsheets/Insecure_Direct_Object_Reference_Prevention_Cheat_Sheet.html), and [Authorization](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html). These explain object-level permissions and server-side authorization on each request.
 
 ### 2. Python account endpoint
 

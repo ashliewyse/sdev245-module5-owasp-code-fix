@@ -11,3 +11,8 @@ target/
 build/
 .DS_Store
 Thumbs.db
+work/
+work-notes/
+*.db
+*.sqlite
+*.sqlite3

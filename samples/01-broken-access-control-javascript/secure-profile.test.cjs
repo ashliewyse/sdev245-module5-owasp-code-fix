@@ -54,7 +54,7 @@ test('an anonymous request is denied before database access', async () => {
 });
 
 test('missing and malformed authenticated IDs fail closed', async () => {
-  for (const id of [undefined, null, '', 123, { id: OWNER_ID }, [OWNER_ID], 'bad-id']) {
+  for (const id of [undefined, null, '', 123, { id: OWNER_ID }, [OWNER_ID], 'bad-id', OWNER_ID + '\n']) {
     const { handler, res, calls } = fixture();
     await handler({ user: { id }, params: { userId: OWNER_ID } }, res);
     assert.equal(res.statusCode, 401);
@@ -95,7 +95,7 @@ test('client-supplied identity and admin flags cannot override ownership', async
 });
 
 test('malformed profile IDs are rejected before database access', async () => {
-  for (const userId of [undefined, '', 'not-an-id', 'a'.repeat(25), { $ne: null }]) {
+  for (const userId of [undefined, '', 'not-an-id', 'a'.repeat(25), { $ne: null }, OWNER_ID + '\n']) {
     const { handler, res, calls } = fixture();
     await handler({ user: { id: OWNER_ID }, params: { userId } }, res);
     assert.equal(res.statusCode, 400);

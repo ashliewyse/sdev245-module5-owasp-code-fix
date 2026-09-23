@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; base-uri 'none'; object-src 'none'">
+    <title>Sample 8: Script integrity</title>
+    <script
+      src="./vendor/demo-library-1.0.0.js"
+      integrity="sha384-nz1vS4rmf3WGL973LScRL8ReIMbMOKkQVZoli/f/W0kQ3muMorrjC1VlL438wSTr"
+      crossorigin="anonymous"
+      defer></script>
+  </head>
+  <body>
+    <h1>Script integrity demonstration</h1>
+    <p>This page pins the exact bytes of a small, reviewed demo library.</p>
+    <p id="library-status" role="status">The demo library has not loaded.</p>
+    <p>If its bytes change, a browser supporting Subresource Integrity refuses to execute it.</p>
+  </body>
+</html>

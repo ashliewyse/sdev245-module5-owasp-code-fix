@@ -1,7 +1,7 @@
 'use strict';
 
 function normalizeId(value) {
-  return typeof value === 'string' && /^[0-9a-fA-F]{24}$/.test(value)
+  return typeof value === 'string' && value.length === 24 && /^[0-9a-fA-F]{24}$/.test(value)
     ? value.toLowerCase()
     : null;
 }

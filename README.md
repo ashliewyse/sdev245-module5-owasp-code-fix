@@ -1,36 +1,62 @@
 # Module 5: OWASP Top 10 Code Fix
 
-**Status: Samples 1–2 implemented and tested (9 JavaScript unit tests and 11 Python route tests). Samples 3–10 remain to be completed.**
+**All ten supplied code samples are implemented, documented, and tested.**
 
-## Assignment
+This repository follows the ten numbered snippets in the assignment, which repeat some categories and cover seven OWASP Top 10:2021 categories. Each folder uses the original snippet's language. These are focused code corrections with explicit application-integration requirements, not a deployed website.
 
-Review and fix all ten numbered code samples provided in the assignment. The supplied samples cover seven vulnerability categories; numbering here matches the assignment.
-
-Due: September 25, 2026 at 11:59 p.m. (as displayed in Canvas).
+Due: September 25, 2026 at 11:59 p.m. as displayed in Canvas.
 
 ## Deliverables
 
-- [ ] Corrected code for all ten samples
-- [ ] Detailed explanation of each security flaw and its real-world impact
-- [ ] Explanation of how each fix mitigates the vulnerability
-- [ ] Official OWASP references for each sample
-- [ ] Readable, consistently formatted code
-- [ ] Verify instructor access to this repository before submitting its URL
-- [ ] Optional: one-minute recording showing the changes
+- [x] Corrected code for all ten supplied samples
+- [x] Security-flaw explanations and real-world impact
+- [x] Explanation of why each fix works
+- [x] Official OWASP references for every sample
+- [x] Readable code and reproducible tests
+- [ ] Confirm instructor access to the repository before submitting its URL
+- [ ] Optional: record a one-minute walkthrough
 
-## Organization
+The repository was created private. A private repository link alone does not give an instructor access. Confirm access before selecting **Web URL** and submitting the repository link in Canvas.
 
-Each numbered folder in `samples/` matches a supplied assignment sample. Samples 1–2 contain corrected JavaScript/Python routes, documentation, and executable tests. Samples 3–10 contain planning templates.
+## Samples and verification
 
-## Grading
+| Sample | Topic | Main code | Passing tests |
+| --- | --- | --- | ---: |
+| 1 | Broken access control — JavaScript | [Profile handler](samples/01-broken-access-control-javascript/secure-profile.cjs) | 9 |
+| 2 | Broken access control — Python | [Account route](samples/02-broken-access-control-python/secure_account.py) | 11 |
+| 3 | MD5 password hashing — Java | [Password storage](samples/03-password-hashing-java/SecurePasswordStorage.java) | 14 |
+| 4 | SHA-1 password hashing — Python | [Password hashing](samples/04-password-hashing-python/password_hashing.py) | 9 |
+| 5 | SQL injection — Java | [User lookup](samples/05-sql-injection-java/UserLookup.java) | 10 |
+| 6 | NoSQL injection — JavaScript | [User handler](samples/06-nosql-injection-javascript/secure-user.mjs) | 18 |
+| 7 | Insecure password-reset design — Python | [Reset workflow](samples/07-password-reset-python/secure_reset.py) | 20 |
+| 8 | Software/data integrity — HTML | [Pinned script example](samples/08-script-integrity-html/index.html) | 5 |
+| 9 | SSRF — Python | [Restricted fetch helper](samples/09-ssrf-python/secure_fetch.py) | 11 |
+| 10 | Authentication failures — Java | [Authentication service](samples/10-authentication-java/AuthenticationService.java) | 13 |
+| **Total** | | | **120** |
 
-| Criterion | Points |
-| --- | ---: |
-| Explanation of risk | 15 |
-| Secure code fixes | 15 |
-| Explanation of fixes | 15 |
-| Code clarity and formatting | 5 |
-| Total | 50 |
+Every sample folder contains its original vulnerable snippet, corrected code, risk/fix explanations, references, and specific testing limits. See [VERIFICATION.md](VERIFICATION.md) for the combined results and scope.
+
+## Run all checks
+
+Prerequisites used for verification: **Python 3.14.6**, **Node.js 24.18.0**, and **JDK 17.0.19**. Both `java` and `javac` must be on PATH. Python password tests intentionally perform expensive KDF operations and need roughly 256 MiB or more available for concurrent hashing.
+
+Windows PowerShell, from the repository root:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe run_checks.py
+```
+
+macOS/Linux:
+
+```sh
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python run_checks.py
+```
+
+The runner stops on a failed command, compiles Java into a temporary directory, and runs each Python sample separately. The checks use local fixtures, temporary databases, or test doubles. They send no email and make no external network requests.
 
 ## Sample explanations
 
@@ -64,112 +90,80 @@ Folder: [samples/02-broken-access-control-python](samples/02-broken-access-contr
 
 ### 3. Java MD5 password hashing
 
-Folder: [samples/03-password-hashing-java](samples/03-password-hashing-java/)
+**Flaw and impact:** Unsalted MD5 is fast to guess offline after a database leak and gives the same result for the same password.
 
-**Security flaw and real-world impact:** TODO.
+**Corrected code and why it works:** [Sample 3](samples/03-password-hashing-java/README.md) uses a random salt, 600,000-iteration PBKDF2-HMAC-SHA256, bounded versioned records, and timing-safe derived-byte comparison. [Shared implementation](shared/java/PasswordHashes.java) is reused by Sample 10. This JDK-only teaching choice documents Argon2id as the preferred general-purpose option and does not claim FIPS validation.
 
-**Corrected code:** TODO — add the source file and link it here.
+**Verification:** 14 passing tests cover real KDF verification, independent salts, tampering, malformed records, and Unicode.
 
-**Why the fix works:** TODO.
-
-**Verification:** TODO — describe relevant checks and actual results.
-
-**Official OWASP reference:** TODO — add the specific page URL and explain its relevance.
+**OWASP reference:** [Password Storage](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html).
 
 ### 4. Python SHA-1 password hashing
 
-Folder: [samples/04-password-hashing-python](samples/04-password-hashing-python/)
+**Flaw and impact:** Unsalted SHA-1 allows inexpensive offline password guessing and identifies users who share a password.
 
-**Security flaw and real-world impact:** TODO.
+**Corrected code and why it works:** [Sample 4](samples/04-password-hashing-python/README.md) replaces it with independently salted scrypt using `N=2^17, r=8, p=1`. Memory and CPU cost slow guessing; strict record parsing prevents an attacker-controlled cost parameter, and `compare_digest` verifies the derived value.
 
-**Corrected code:** TODO — add the source file and link it here.
+**Verification:** 9 passing tests exercise correct/wrong passwords, unique salts, tampering, malformed records, input limits, and Unicode preservation. Legacy hashes need a separate verified migration/reset workflow.
 
-**Why the fix works:** TODO.
-
-**Verification:** TODO — describe relevant checks and actual results.
-
-**Official OWASP reference:** TODO — add the specific page URL and explain its relevance.
+**OWASP reference:** [Password Storage](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html).
 
 ### 5. Java SQL query
 
-Folder: [samples/05-sql-injection-java](samples/05-sql-injection-java/)
+**Flaw and impact:** Concatenating a submitted username into SQL can let input change the query and retrieve unintended records.
 
-**Security flaw and real-world impact:** TODO.
+**Corrected code and why it works:** [Sample 5](samples/05-sql-injection-java/README.md) binds the username through `PreparedStatement.setString`, keeping query syntax separate from data. It selects limited fields and closes owned statement/result resources on success and failure. The caller still enforces permissions.
 
-**Corrected code:** TODO — add the source file and link it here.
+**Verification:** 10 passing JDBC API-contract tests verify injection-like input remains a bound value and resources close correctly. They use JDBC test doubles, not a live database.
 
-**Why the fix works:** TODO.
-
-**Verification:** TODO — describe relevant checks and actual results.
-
-**Official OWASP reference:** TODO — add the specific page URL and explain its relevance.
+**OWASP reference:** [SQL Injection Prevention](https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html).
 
 ### 6. JavaScript NoSQL query
 
-Folder: [samples/06-nosql-injection-javascript](samples/06-nosql-injection-javascript/)
+**Flaw and impact:** An unchecked query parameter may be parsed as an object containing MongoDB operators. Returning the whole matched document can disclose private data.
 
-**Security flaw and real-world impact:** TODO.
+**Corrected code and why it works:** [Sample 6](samples/06-nosql-injection-javascript/README.md) accepts one bounded username string, constructs the query itself, binds it to the authenticated owner's immutable ID, and returns only approved fields. This independent sample documents a UUID-string `_id` schema. It also disables caching.
 
-**Corrected code:** TODO — add the source file and link it here.
+**Verification:** 18 passing handler tests cover operator objects, arrays, extra parameters, trailing newlines, unauthorized access, safe errors, and output filtering. The database is stubbed.
 
-**Why the fix works:** TODO.
-
-**Verification:** TODO — describe relevant checks and actual results.
-
-**Official OWASP reference:** TODO — add the specific page URL and explain its relevance.
+**OWASP references:** [NoSQL Security](https://cheatsheetseries.owasp.org/cheatsheets/NoSQL_Security_Cheat_Sheet.html) and [Authorization](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html).
 
 ### 7. Python password reset
 
-Folder: [samples/07-password-reset-python](samples/07-password-reset-python/)
+**Flaw and impact:** An email address alone lets a caller overwrite another person's password, causing account takeover. The original also stores the new password directly.
 
-**Security flaw and real-world impact:** TODO.
+**Corrected code and why it works:** [Sample 7](samples/07-password-reset-python/README.md) uses verified-channel delivery of a random, expiring token. Only its digest is stored. A database transaction binds token consumption to the correct user's password update and session-epoch increment. Flask routes require CSRF checks and explicit queue/throttling integrations.
 
-**Corrected code:** TODO — add the source file and link it here.
+**Verification:** 20 passing tests include expiration, replay, concurrency, rollback, account binding, hashed storage, generic queued responses, CSRF, and session-epoch checks. Delivery, queue, shared throttling, and production authentication adapters are documented integration requirements.
 
-**Why the fix works:** TODO.
-
-**Verification:** TODO — describe relevant checks and actual results.
-
-**Official OWASP reference:** TODO — add the specific page URL and explain its relevance.
+**OWASP references:** [Insecure Design](https://owasp.org/Top10/2021/A04_2021-Insecure_Design/), [Forgot Password](https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html), and [Password Storage](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html).
 
 ### 8. External script integrity
 
-Folder: [samples/08-script-integrity-html](samples/08-script-integrity-html/)
+**Flaw and impact:** A mutable external script runs without verifying its approved contents; a supplier compromise can execute malicious code in the page.
 
-**Security flaw and real-world impact:** TODO.
+**Corrected code and why it works:** [Sample 8](samples/08-script-integrity-html/README.md) includes a versioned harmless demo library and its actual SHA-384 Subresource Integrity digest, plus restrictive CSP. The assignment's illustrative CDN address is replaced with a runnable local example. The browser can reject changed bytes; review establishes whether those approved bytes are trustworthy.
 
-**Corrected code:** TODO — add the source file and link it here.
+**Verification:** 5 passing static/Node tests check the digest, tampering, markup, and harmless script behavior. Browser enforcement is not claimed as tested; manual browser steps are included.
 
-**Why the fix works:** TODO.
-
-**Verification:** TODO — describe relevant checks and actual results.
-
-**Official OWASP reference:** TODO — add the specific page URL and explain its relevance.
+**OWASP reference:** [Third Party JavaScript Management](https://cheatsheetseries.owasp.org/cheatsheets/Third_Party_Javascript_Management_Cheat_Sheet.html#subresource-integrity).
 
 ### 9. Python URL fetching
 
-Folder: [samples/09-ssrf-python](samples/09-ssrf-python/)
+**Flaw and impact:** Accepting an arbitrary URL can turn the server into a proxy to private services or cloud metadata.
 
-**Security flaw and real-world impact:** TODO.
+**Corrected code and why it works:** [Sample 9](samples/09-ssrf-python/README.md) lets callers select a fixed approved resource instead of supplying a URL. It checks public IPv4 DNS results, pins the numeric connection, preserves TLS hostname verification, rejects redirects, and limits the response body. IPv6-only destinations are intentionally unsupported.
 
-**Corrected code:** TODO — add the source file and link it here.
+**Verification:** 11 passing offline tests cover destination restrictions, private/mixed DNS answers, address pinning, TLS settings, redirects, response limits, and safe errors. Live network behavior and deployed egress controls are outside the tests.
 
-**Why the fix works:** TODO.
-
-**Verification:** TODO — describe relevant checks and actual results.
-
-**Official OWASP reference:** TODO — add the specific page URL and explain its relevance.
+**OWASP references:** [A10:2021 SSRF](https://owasp.org/Top10/2021/A10_2021-Server-Side_Request_Forgery_%28SSRF%29/) and [SSRF Prevention](https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html).
 
 ### 10. Java password authentication
 
-Folder: [samples/10-authentication-java](samples/10-authentication-java/)
+**Flaw and impact:** Comparing input directly to a stored password suggests plaintext storage and does not perform secure password-hash verification.
 
-**Security flaw and real-world impact:** TODO.
+**Corrected code and why it works:** [Sample 10](samples/10-authentication-java/README.md) verifies the stored adaptive hash, performs dummy KDF work for missing/corrupt accounts, returns a generic failure, and applies bounded synchronized account/global attempt limits. Session creation and a shared multi-process limiter remain host-application responsibilities.
 
-**Corrected code:** TODO — add the source file and link it here.
+**Verification:** 13 passing tests cover real password verification, unknown users, input validation, limiter expiration/capacity, and concurrent attempts.
 
-**Why the fix works:** TODO.
-
-**Verification:** TODO — describe relevant checks and actual results.
-
-**Official OWASP reference:** TODO — add the specific page URL and explain its relevance.
+**OWASP references:** [Authentication](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html) and [Password Storage](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html).

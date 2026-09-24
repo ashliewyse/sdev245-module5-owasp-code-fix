@@ -1,4 +1,4 @@
-"""Run all ten samples' checks from one command. Requires Python, Node, JDK 17+."""
+"""Run all ten samples and the login demo. Requires Python, Node, JDK 17+."""
 
 import importlib.util
 from pathlib import Path
@@ -46,7 +46,10 @@ def main():
                            "owasp.sample10.AuthenticationTest"):
             run(test_class, ["java", "-cp", build, test_class])
 
-    print("\nAll ten sample suites passed.", flush=True)
+    run("Working login application", [
+        sys.executable, "-m", "unittest", "discover", "-s", "demo-app", "-p", "test_*.py", "-v",
+    ])
+    print("\nAll ten sample suites and the login application passed.", flush=True)
 
 
 if __name__ == "__main__":

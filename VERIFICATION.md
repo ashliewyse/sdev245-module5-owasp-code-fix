@@ -2,7 +2,7 @@
 
 Verified September 23, 2026 by running `run_checks.py` from the repository root.
 
-**Result: all ten sample suites passed; 120 named tests; no Java compiler warnings.**
+**Result: all ten sample suites and the working login application passed; 146 named tests; no Java compiler warnings.**
 
 ## Environment
 
@@ -26,7 +26,8 @@ Verified September 23, 2026 by running `run_checks.py` from the repository root.
 | 8 | 5 | Actual pinned file hash, byte tampering, HTML markup, Node execution of harmless library |
 | 9 | 11 | Offline DNS/HTTP/socket/TLS construction and fetch-policy tests |
 | 10 | 13 | Actual password verification plus deterministic and concurrent attempt-limiter checks |
-| **Total** | **120** | |
+| Login demo | 26 | Real registration/login/logout, roles, owner checks, CSRF, password verification, session revocation/expiry, throttling, and CLI admin provisioning |
+| **Total** | **146** | |
 
 ## Reproduce
 
@@ -37,6 +38,17 @@ python run_checks.py
 ```
 
 Each sample README also includes an independent command. The runner uses the current Python interpreter, compiles Java into an automatically removed temporary directory, and exits with failure if any suite fails.
+
+## Browser walkthrough
+
+A Chrome walkthrough against a disposable local database verified:
+
+- Registration and login create a normal user and open that user's profile.
+- A normal user receives access denied for the admin page and another user's profile.
+- An administrator can open the account directory.
+- Logout returns protected pages to the login form.
+
+The homepage and admin directory were visually inspected. All browser accounts were invented test fixtures, not personal accounts; the QA helper and database are excluded from the repository.
 
 ## What these results do not establish
 

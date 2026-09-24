@@ -16,3 +16,4 @@ work-notes/
 *.db
 *.sqlite
 *.sqlite3
+demo-app/instance/

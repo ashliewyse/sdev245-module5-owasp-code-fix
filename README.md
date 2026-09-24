@@ -1,13 +1,20 @@
 # Module 5: OWASP Top 10 Code Fix
 
-**All ten supplied code samples are implemented, documented, and tested.**
+**All ten code-fix samples and a working login application are implemented, documented, and tested.**
 
-This repository follows the ten numbered snippets in the assignment, which repeat some categories and cover seven OWASP Top 10:2021 categories. Each folder uses the original snippet's language. These are focused code corrections with explicit application-integration requirements, not a deployed website.
+This repository follows the ten numbered snippets in the assignment, which repeat some categories and cover seven OWASP Top 10:2021 categories. Each sample folder uses the original snippet's language. The separate `demo-app/` folder provides a runnable local application demonstrating registration, authentication, owner-only profiles, and user/admin access.
 
 Due: September 25, 2026 at 11:59 p.m. as displayed in Canvas.
 
+## Working login application
+
+[Access Lab in demo-app](demo-app/README.md) covers the assignment introduction's request for a working login system with role-based access. It includes registration with scrypt password storage, login/logout, owner-only profiles, a protected admin directory, CSRF protection, revocable sessions, and attempt limits.
+
+Follow the [setup and administrator-creation instructions](demo-app/README.md). It runs locally at `http://127.0.0.1:5000`; no default accounts or passwords are supplied. The application is separate from the ten focused code-fix samples. Its 26 automated tests passed, and the registration/login/access/logout flow was also checked in Chrome.
+
 ## Deliverables
 
+- [x] Runnable login application with user/admin roles
 - [x] Corrected code for all ten supplied samples
 - [x] Security-flaw explanations and real-world impact
 - [x] Explanation of why each fix works
@@ -32,7 +39,8 @@ The repository was created private. A private repository link alone does not giv
 | 8 | Software/data integrity — HTML | [Pinned script example](samples/08-script-integrity-html/index.html) | 5 |
 | 9 | SSRF — Python | [Restricted fetch helper](samples/09-ssrf-python/secure_fetch.py) | 11 |
 | 10 | Authentication failures — Java | [Authentication service](samples/10-authentication-java/AuthenticationService.java) | 13 |
-| **Total** | | | **120** |
+| Demo | Working login and role application | [Flask app](demo-app/app.py) | 26 |
+| **Total** | | | **146** |
 
 Every sample folder contains its original vulnerable snippet, corrected code, risk/fix explanations, references, and specific testing limits. See [VERIFICATION.md](VERIFICATION.md) for the combined results and scope.
 
@@ -56,7 +64,7 @@ python3 -m venv .venv
 .venv/bin/python run_checks.py
 ```
 
-The runner stops on a failed command, compiles Java into a temporary directory, and runs each Python sample separately. The checks use local fixtures, temporary databases, or test doubles. They send no email and make no external network requests.
+The runner stops on a failed command, compiles Java into a temporary directory, and runs each Python sample and the working login app separately. The checks use local fixtures, temporary databases, or test doubles. They send no email and make no external network requests.
 
 ## Sample explanations
 

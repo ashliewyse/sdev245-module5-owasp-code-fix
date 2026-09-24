@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Admin area{% endblock %}
+{% block content %}
+  <section class="page-heading"><p class="eyebrow">Admin area / Account directory</p><h1>A different level of access.</h1><p class="lead">An overview of registered accounts, available to administrators.</p></section>
+  <section class="directory-card" aria-labelledby="directory-heading">
+    <div class="directory-heading"><div><h2 id="directory-heading">Account directory</h2><p>Basic account details and assigned roles.</p></div><span class="badge">Admin access</span></div>
+    <div class="table-scroll" role="region" aria-label="Registered accounts" tabindex="0">
+      <table>
+        <caption class="visually-hidden">Registered accounts and their roles</caption>
+        <thead><tr><th scope="col">Account</th><th scope="col">Username</th><th scope="col">Role</th><th scope="col">ID</th></tr></thead>
+        <tbody>{% for account in accounts %}<tr><th scope="row"><span class="account-name"><span class="avatar avatar-mini" aria-hidden="true">{{ account['display_name'][:1] | upper }}</span>{{ account['display_name'] }}</span></th><td>{{ account['username'] }}</td><td><span class="badge{% if account['role'] != 'admin' %} badge-neutral{% endif %}">{{ account['role'] | capitalize }}</span></td><td class="muted">{{ account['id'] }}</td></tr>{% else %}<tr><td colspan="4" class="empty-state">No accounts to display.</td></tr>{% endfor %}</tbody>
+      </table>
+    </div>
+  </section>
+  <p class="section-note">Admin access covers this directory. Individual profile pages still belong to their account owners.</p>
+{% endblock %}

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>{% block title %}Access Lab{% endblock %} · OWASP login demo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="site-shell">
+      <header class="site-header">
+        <a class="brand" href="{{ url_for('home') }}" aria-label="Access Lab home">
+          <span class="brand-mark" aria-hidden="true">A<span>↗</span></span>
+          <span>Access Lab<small>A working login demo</small></span>
+        </a>
+        <nav aria-label="Main navigation">
+          <a href="{{ url_for('home') }}"{% if request.endpoint == 'home' %} aria-current="page"{% endif %}>Overview</a>
+          {% if g.user %}
+            <a href="{{ url_for('profile', user_id=g.user['id']) }}"{% if request.endpoint == 'profile' %} aria-current="page"{% endif %}>My profile</a>
+            {% if g.user['role'] == 'admin' %}
+              <a href="{{ url_for('admin') }}"{% if request.endpoint == 'admin' %} aria-current="page"{% endif %}>Admin</a>
+            {% endif %}
+            <form action="{{ url_for('logout') }}" method="post" class="nav-form">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="button button-small button-outline" type="submit">Log out</button>
+            </form>
+          {% else %}
+            <a href="{{ url_for('login') }}"{% if request.endpoint == 'login' %} aria-current="page"{% endif %}>Log in</a>
+            <a class="button button-small" href="{{ url_for('register') }}"{% if request.endpoint == 'register' %} aria-current="page"{% endif %}>Create account <span aria-hidden="true">↗</span></a>
+          {% endif %}
+        </nav>
+      </header>
+
+      <main id="main" tabindex="-1">
+        {% with messages = get_flashed_messages(with_categories=True) %}
+          {% if messages %}
+            <div class="flash-list" aria-live="polite">
+              {% for category, message in messages %}
+                <p class="flash flash-{{ category }}">{{ message }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+      </main>
+
+      <footer class="site-footer">
+        <p><span class="footer-dot" aria-hidden="true"></span> Built to make access rules visible.</p>
+        <p>Module 5 <span aria-hidden="true">/</span> OWASP code-fix project</p>
+      </footer>
+    </div>
+  </body>
+</html>

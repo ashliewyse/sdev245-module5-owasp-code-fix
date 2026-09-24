@@ -20,10 +20,10 @@ Follow the [setup and administrator-creation instructions](demo-app/README.md). 
 - [x] Explanation of why each fix works
 - [x] Official OWASP references for every sample
 - [x] Readable code and reproducible tests
-- [ ] Confirm instructor access to the repository before submitting its URL
+- [x] Repository is public and accessible to the instructor
 - [ ] Optional: record a one-minute walkthrough
 
-The repository was created private. A private repository link alone does not give an instructor access. Confirm access before selecting **Web URL** and submitting the repository link in Canvas.
+The repository is public. In Canvas, select **Web URL** and submit [this repository link](https://github.com/ashliewyse/sdev245-module5-owasp-code-fix). The code is ready for submission; changing repository visibility does not submit the assignment in Canvas.
 
 ## Samples and verification
 
